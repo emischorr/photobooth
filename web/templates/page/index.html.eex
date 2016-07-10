@@ -1,0 +1,13 @@
+<h1>Fotobox</h1>
+<div id="screensaver" class="screensaver">
+  Zum Starten drücken...
+</div>
+<div id="countdown" class="countdown" style="display: none;">
+  <h2>5</h2>
+</div>
+<div id="capturing" class="capturing" style="display: none;">
+  Bitte warten...
+</div>
+<div id="preview" class="preview" style="display: none;">
+  <img src="/images/camera.png">
+</div>

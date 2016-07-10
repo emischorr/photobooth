@@ -1,0 +1,30 @@
+h1 {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.screensaver {
+  text-align: center;
+}
+
+.countdown {
+  margin: 0 auto;
+  /*width: 400px;*/
+  text-align: center;
+}
+
+.countdown h2 {
+  font-size: 30em;
+}
+
+.capturing {
+  margin: 0 auto;
+  /*width: 400px;*/
+  text-align: center;
+}
+
+.preview {
+  margin: 0 auto;
+  /*width: 400px;*/
+  text-align: center;
+}
