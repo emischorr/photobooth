@@ -27,24 +27,32 @@ document.updateState = function(state) {
       $('#preview').hide();
       $('#countdown').show().find('h2').html(state["count"]);
       $('#capturing').hide();
+      $('#note').hide();
+      $('#flash').hide();
       break;
     case "capturing":
       $('#screensaver').hide();
       $('#preview').hide();
       $('#countdown').hide();
       $('#capturing').show();
+      $('#note').hide();
+      $('#flash').fadeIn(50).delay(50).fadeOut(500);
       break;
     case "showing":
       $('#screensaver').hide();
       $('#preview').show().find("img").attr("src", "/images/capture.jpg");
       $('#countdown').hide();
       $('#capturing').hide();
+      $('#note').show();
+      $('#flash').hide();
       break;
     case "waiting":
       $('#screensaver').show();
       $('#preview').hide();
       $('#countdown').hide();
       $('#capturing').hide();
+      $('#note').show();
+      $('#flash').hide();
       break;
     default:
       console.log("unknown status "+state["current_state"])

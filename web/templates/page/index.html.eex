@@ -1,6 +1,9 @@
 <h1>Fotobox</h1>
+<div id="note" class="note">
+  Zum Starten Fußpedal drücken...
+</div>
 <div id="screensaver" class="screensaver">
-  Zum Starten drücken...
+  <!-- <img src="/images/camera.png"> -->
 </div>
 <div id="countdown" class="countdown" style="display: none;">
   <h2>5</h2>
@@ -10,4 +13,6 @@
 </div>
 <div id="preview" class="preview" style="display: none;">
   <img src="/images/camera.png">
+</div>
+<div id="flash" class="flash" style="display: none;">
 </div>

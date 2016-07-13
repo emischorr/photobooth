@@ -1,10 +1,82 @@
+@keyframes animatedBackground {
+    0% { background-position: 0 0; }
+    100% { background-position: -6000px 0; }
+}
+@-moz-keyframes animatedBackground {
+    0% { background-position: 0 0; }
+    100% { background-position: -6000px 0; }
+}
+@-webkit-keyframes animatedBackground {
+    0% { background-position: 0 0; }
+    100% { background-position: -6000px 0; }
+}
+@-ms-keyframes animatedBackground {
+    0% { background-position: 0 0; }
+    100% { background-position: -6000px 0; }
+}
+@-o-keyframes animatedBackground {
+    0% { background-position: 0 0; }
+    100% { background-position: -6000px 0; }
+}
+
+html {
+  height: 100%;
+  background-image: url("/images/bg.jpg");
+  background-size: cover;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 2em;
+  color: #e2e2e2;
+  background-color: rgba(142, 142, 142, 0.13);
+  /*background-color: transparent;*/
+  height: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 90%;
+}
+
 h1 {
   text-align: center;
+  font-size: 3em;
+  margin-top: 50px;
   margin-bottom: 50px;
 }
 
 .screensaver {
   text-align: center;
+  height: 400px;
+  background-image: url('/images/slideshow/strip.png');
+  background-repeat: repeat-x;
+  background-size: cover;
+  animation: animatedBackground 100s linear infinite;
+  -moz-animation: animatedBackground 100s linear infinite;
+  -webkit-animation: animatedBackground 100s linear infinite;
+  -ms-animation: animatedBackground 100s linear infinite;
+  -o-animation: animatedBackground 100s linear infinite;
+}
+
+.flash {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 30;
+}
+
+.note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100px;
+  text-align: center;
+  z-index: 20;
+  font-size: 1.5em;
 }
 
 .countdown {
@@ -18,13 +90,21 @@ h1 {
 }
 
 .capturing {
-  margin: 0 auto;
-  /*width: 400px;*/
+  margin-top: 300px;
   text-align: center;
+  font-size: 1.5em;
 }
 
 .preview {
-  margin: 0 auto;
-  /*width: 400px;*/
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   text-align: center;
+  z-index: 10;
+}
+
+.preview img {
+  height: 100%;
 }

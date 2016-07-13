@@ -118,11 +118,11 @@ defmodule Photobooth.Camera do
       :counting ->
         IO.puts "capturing..."
         # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jpg --hook-script priv/hook.sh
-        System.cmd("gphoto2", [
-          "--capture-image-and-download", "--keep-raw", "--force-overwrite",
-          "--filename priv/static/images/capture.jpg",
-          "--hook-script", "priv/hook.sh"
-        ])
+        # System.cmd("gphoto2", [
+        #   "--capture-image-and-download", "--keep-raw", "--force-overwrite",
+        #   "--filename priv/static/images/capture.jpg",
+        #   "--hook-script", "priv/hook.sh"
+        # ])
         put_in(state, [:current_state], :capturing) |> broadcast |> capture
       _ -> state
     end

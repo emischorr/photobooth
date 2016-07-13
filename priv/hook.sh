@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SLIDESHOW_DIR="static/images/slideshow"
+MAX_IMAGES=10
+
 case "$ACTION" in
   init)
     echo "init"
@@ -9,6 +12,15 @@ case "$ACTION" in
     ;;
   download)
     echo "got image $ARGUMENT"
+    # cp image to slideshow folder
+    cp $ARGUMENT $SLIDESHOW_DIR/$(date +'%Y_%m_%d_%H_%M_%S').jpg
+    # remove oldest image if to many images
+    file_count=$(/bin/ls $SLIDESHOW_DIR | wc -l)
+    if [ $file_count -gt $MAX_IMAGES ]
+      rm "`/bin/ls -rt | head -1`"
+    fi
+    # create photo strip
+    convert $SLIDESHOW_DIR/*.jpg +append $SLIDESHOW_DIR/strip.png
     redis-cli publish photobooth.event show
     ;;
   stop)
