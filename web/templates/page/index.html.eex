@@ -3,7 +3,7 @@
   Zum Starten Fußpedal drücken...
 </div>
 <div id="screensaver" class="screensaver">
-  <!-- <img src="/images/camera.png"> -->
+  <img src="/images/camera.png">
 </div>
 <div id="countdown" class="countdown" style="display: none;">
   <h2>5</h2>

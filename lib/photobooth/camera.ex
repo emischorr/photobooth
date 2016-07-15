@@ -81,17 +81,17 @@ defmodule Photobooth.Camera do
 
   defp schedule_capture do
     Process.send_after(self(), :capture, @update_time)
-    Process.send_after(self(), :wait, @wait_time)
+    # Process.send_after(self(), :wait, @wait_time)
   end
 
   defp start_countdown(state) do
     case state[:current_state] do
       :waiting ->
-        IO.puts "started counting..."
-        put_in(state, [:current_state], :counting) |> count
+        IO.puts "[#{state[:current_state]} -> counting] started counting..."
+        state |> put_in([:count], @start_count) |> put_in([:current_state], :counting) |> count
       :showing ->
-        IO.puts "stopped showing. started counting..."
-        put_in(state, [:current_state], :counting) |> count
+        IO.puts "[#{state[:current_state]} -> counting] stopped showing. started counting..."
+        state |> put_in([:count], @start_count) |> put_in([:current_state], :counting) |> count
       _ -> state
     end
   end
@@ -108,21 +108,25 @@ defmodule Photobooth.Camera do
         schedule_next_count
         update_in(state, [:count], &(&1-1)) |> broadcast
       _ ->
-        Logger.info "Resetting..."
-        %{current_state: :waiting, count: @start_count}
+        Logger.info "Stopped countdown."
+        state
     end
   end
 
   defp capture(state) do
     case state[:current_state] do
       :counting ->
-        IO.puts "capturing..."
-        # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jpg --hook-script priv/hook.sh
-        System.cmd("gphoto2", [
-          "--capture-image-and-download", "--keep-raw", "--force-overwrite",
-          "--filename priv/static/images/capture.jpg",
-          "--hook-script", "priv/hook.sh"
-        ])
+        IO.puts "[#{state[:current_state]} -> capturing] capturing..."
+        try do
+          # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jpg --hook-script priv/hook.sh
+          System.cmd("gphoto2", [
+            "--capture-image-and-download", "--keep-raw", "--force-overwrite",
+            "--filename=priv/static/images/capture.jpg",
+            "--hook-script", "priv/hook.sh"
+          ])
+        rescue
+          ErlangError -> IO.puts "Error accessing camera"
+        end
         put_in(state, [:current_state], :capturing) |> broadcast |> capture
       _ -> state
     end
@@ -132,7 +136,7 @@ defmodule Photobooth.Camera do
     case state[:current_state] do
       :counting -> state
       _ ->
-        IO.puts "show image"
+        IO.puts "[#{state[:current_state]} -> showing] show image"
         Process.send_after(self(), :wait, @wait_time)
         put_in(state, [:current_state], :showing) |> broadcast
     end
@@ -141,8 +145,10 @@ defmodule Photobooth.Camera do
   defp wait(state) do
     case state[:current_state] do
       :waiting -> state
+      :capturing -> state
+      :counting -> state
       _ ->
-        IO.puts "going to wait..."
+        IO.puts "[#{state[:current_state]} -> waiting] going to wait..."
         put_in(state, [:current_state], :waiting) |> broadcast
     end
   end

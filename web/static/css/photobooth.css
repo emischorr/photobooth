@@ -19,6 +19,13 @@
     100% { background-position: -6000px 0; }
 }
 
+@font-face {
+    font-family: 'Pacifico';
+    src: url('/fonts/pacifico.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html {
   height: 100%;
   background-image: url("/images/bg.jpg");
@@ -40,6 +47,7 @@ body {
 }
 
 h1 {
+  font-family: "Pacifico";
   text-align: center;
   font-size: 3em;
   margin-top: 50px;
@@ -48,15 +56,19 @@ h1 {
 
 .screensaver {
   text-align: center;
-  height: 400px;
-  background-image: url('/images/slideshow/strip.png');
+  height: 380px;
+  /*background-image: url('/images/slideshow/strip.png');
   background-repeat: repeat-x;
   background-size: cover;
   animation: animatedBackground 100s linear infinite;
   -moz-animation: animatedBackground 100s linear infinite;
   -webkit-animation: animatedBackground 100s linear infinite;
   -ms-animation: animatedBackground 100s linear infinite;
-  -o-animation: animatedBackground 100s linear infinite;
+  -o-animation: animatedBackground 100s linear infinite;*/
+}
+
+.screensaver img {
+  height: 100%;
 }
 
 .flash {
