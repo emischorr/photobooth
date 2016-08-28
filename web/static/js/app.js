@@ -39,8 +39,9 @@ document.updateState = function(state) {
       $('#flash').fadeIn(50).delay(50).fadeOut(500);
       break;
     case "showing":
+      var d = new Date();
       $('#screensaver').hide();
-      $('#preview').show().find("img").attr("src", "/images/capture.jpg");
+      $('#preview').show().find("img").attr("src", "/images/capture.jpg?"+d.getTime());
       $('#countdown').hide();
       $('#capturing').hide();
       $('#note').show();

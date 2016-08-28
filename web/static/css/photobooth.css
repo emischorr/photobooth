@@ -21,7 +21,7 @@
 
 @font-face {
     font-family: 'Pacifico';
-    src: url('/fonts/pacifico.ttf') format('truetype');
+    src: url('/fonts/Pacifico.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -56,7 +56,7 @@ h1 {
 
 .screensaver {
   text-align: center;
-  height: 380px;
+  height: 300px;
   /*background-image: url('/images/slideshow/strip.png');
   background-repeat: repeat-x;
   background-size: cover;
@@ -98,7 +98,7 @@ h1 {
 }
 
 .countdown h2 {
-  font-size: 30em;
+  font-size: 25em;
 }
 
 .capturing {

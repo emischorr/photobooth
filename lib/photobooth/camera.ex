@@ -68,6 +68,10 @@ defmodule Photobooth.Camera do
     {:noreply, wait(state)}
   end
 
+  def handle_info(:show, state) do
+    {:noreply, show(state)}
+  end
+
   def handle_info({:EXIT, _port, _code}, state) do
     IO.puts "finished"
     {:noreply, state}
@@ -117,8 +121,14 @@ defmodule Photobooth.Camera do
     case state[:current_state] do
       :counting ->
         IO.puts "[#{state[:current_state]} -> capturing] capturing..."
+        put_in(state, [:current_state], :capturing) |> broadcast |> do_capture
+      _ -> state
+    end
+  end
+
+  defp do_capture(state) do
         try do
-          # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jpg --hook-script priv/hook.sh
+          # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jp$
           System.cmd("gphoto2", [
             "--capture-image-and-download", "--keep-raw", "--force-overwrite",
             "--filename=priv/static/images/capture.jpg",
@@ -127,9 +137,8 @@ defmodule Photobooth.Camera do
         rescue
           ErlangError -> IO.puts "Error accessing camera"
         end
-        put_in(state, [:current_state], :capturing) |> broadcast |> capture
-      _ -> state
-    end
+    Process.send_after(self(), :show, @update_time)
+    state
   end
 
   defp show(state) do
