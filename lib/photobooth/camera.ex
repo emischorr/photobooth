@@ -120,7 +120,7 @@ defmodule Photobooth.Camera do
         try do
           # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jpg --hook-script priv/hook.sh
           System.cmd("gphoto2", [
-            "--capture-image-and-download", "--keep-raw", "--force-overwrite",
+            "--capture-image-and-download", "--keep", "--force-overwrite",
             "--filename=priv/static/images/capture.jpg",
             "--hook-script", "priv/hook.sh"
           ])
