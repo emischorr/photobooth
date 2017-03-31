@@ -126,7 +126,17 @@ defmodule Photobooth.Camera do
     case state[:current_state] do
       :counting ->
         IO.puts "[#{state[:current_state]} -> capturing] capturing..."
-        put_in(state, [:current_state], :capturing) |> broadcast |> do_capture
+        try do
+          # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jpg --hook-script priv/hook.sh
+          System.cmd("gphoto2", [
+            "--capture-image-and-download", "--keep", "--force-overwrite",
+            "--filename=priv/static/images/capture.jpg",
+            "--hook-script", "priv/hook.sh"
+          ])
+        rescue
+          ErlangError -> IO.puts "Error accessing camera"
+        end
+        put_in(state, [:current_state], :capturing) |> broadcast |> capture
       _ -> state
     end
   end
