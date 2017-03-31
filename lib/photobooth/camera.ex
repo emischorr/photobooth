@@ -6,6 +6,7 @@ defmodule Photobooth.Camera do
   @update_time 1000
   @wait_time 30*1000
   @start_count 6
+  @cycle_time 10*1000
 
   # states: waiting -> counting -> capturing -> showing
 
@@ -37,7 +38,7 @@ defmodule Photobooth.Camera do
   def init(_opts) do
     Process.flag(:trap_exit, true)
     Logger.info "Started Camera Server Process"
-    {:ok, %{current_state: :waiting, count: @start_count}}
+    {:ok, %{current_state: :waiting, count: @start_count, current_list: ["/images/capture.jpg"], current_slideshow_image: "/images/capture.jpg"}}
   end
 
   def handle_call({:countdown}, _from, state) do
@@ -66,6 +67,10 @@ defmodule Photobooth.Camera do
 
   def handle_info(:wait, state) do
     {:noreply, wait(state)}
+  end
+
+  def handle_info(:cycle, state) do
+    {:noreply, cycle(state)}
   end
 
   def handle_info(:show, state) do
@@ -127,16 +132,16 @@ defmodule Photobooth.Camera do
   end
 
   defp do_capture(state) do
-        try do
-          # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename capture.jp$
-          System.cmd("gphoto2", [
-            "--capture-image-and-download", "--keep-raw", "--force-overwrite",
-            "--filename=priv/static/images/capture.jpg",
-            "--hook-script", "priv/hook.sh"
-          ])
-        rescue
-          ErlangError -> IO.puts "Error accessing camera"
-        end
+    try do
+      # gphoto2 --capture-image-and-download --keep-raw --force-overwrite --filename=priv/static/images/capture.jpg
+      System.cmd("gphoto2", [
+        "--capture-image-and-download", "--keep", "--force-overwrite",
+        "--filename=priv/static/images/capture.jpg",
+        "--hook-script", "priv/hook.sh"
+      ])
+    rescue
+      ErlangError -> IO.puts "Error accessing camera"
+    end
     Process.send_after(self(), :show, @update_time)
     state
   end
@@ -158,13 +163,50 @@ defmodule Photobooth.Camera do
       :counting -> state
       _ ->
         IO.puts "[#{state[:current_state]} -> waiting] going to wait..."
-        put_in(state, [:current_state], :waiting) |> broadcast
+        Process.send_after(self(), :cycle, @cycle_time)
+        put_in(state, [:current_state], :waiting)
+        |> refresh_file_list
+        |> next_slideshow
+        |> broadcast
+    end
+  end
+
+  defp cycle(state) do
+    case state[:current_state] do
+      :waiting ->
+        Process.send_after(self(), :cycle, @cycle_time)
+        state |> next_slideshow |> broadcast
+      _ -> state
     end
   end
 
   defp broadcast(state) do
     Photobooth.Endpoint.broadcast "photobooth", "state:update", state
     state
+  end
+
+  defp next_slideshow(state) do
+    # calculate index of new image
+    new_index = Enum.find_index(state[:current_list], &(&1 == state[:current_slideshow_image]))
+    |> next_index
+    |> rem(Enum.count(state[:current_list]))
+    # set current_slideshow_image in state
+    put_in(state, [:current_slideshow_image], Enum.at(state[:current_list], new_index))
+  end
+
+  defp next_index(index) do
+    case index do
+      old when is_number(old) -> old+1
+      _ -> 0
+    end
+  end
+
+  defp refresh_file_list(state) do
+    {:ok, list} = File.ls("priv/static/images/slideshow")
+    files = list
+    |> Enum.filter(fn(f) -> String.ends_with?(f, ".jpg") end)
+    |> Enum.sort(&(&1 >= &2))
+    put_in(state, [:current_list], files)
   end
 
 end

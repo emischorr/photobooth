@@ -67,7 +67,7 @@ channel.on("state:update", state => {
 $(document).off("keydown").on("keydown", e => {
   // alert("key "+e.keyCode)
   if (e.keyCode == 19 || e.keyCode == 80) {
-    chan.push("photobooth:start", {})
+    channel.push("photobooth:start", {})
   }
 
 })

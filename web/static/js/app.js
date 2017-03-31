@@ -40,7 +40,7 @@ document.updateState = function(state) {
       break;
     case "showing":
       var d = new Date();
-      $('#screensaver').hide();
+      $('#screensaver').hide().find("img").attr("src", "/images/capture.jpg?"+d.getTime());
       $('#preview').show().find("img").attr("src", "/images/capture.jpg?"+d.getTime());
       $('#countdown').hide();
       $('#capturing').hide();
@@ -48,7 +48,8 @@ document.updateState = function(state) {
       $('#flash').hide();
       break;
     case "waiting":
-      $('#screensaver').show();
+      var d = new Date();
+      $('#screensaver').show().find("img").attr("src", "/images/slideshow/"+state["current_slideshow_image"]+"?"+d.getTime());
       $('#preview').hide();
       $('#countdown').hide();
       $('#capturing').hide();
